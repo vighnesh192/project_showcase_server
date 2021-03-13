@@ -1,0 +1,25 @@
+{
+  "name": "project-showcase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "knex": "^0.95.1",
+    "nodemon": "^2.0.7",
+    "objection": "^2.2.14",
+    "pg": "^8.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "seed": "npx knex seed:run --knexfile ./db/knexfile.js",
+    "make-seed": "npx knex seed:make dev --knexfile ./db/knexfile.js",
+    "migrate": "npx knex migrate:latest --knexfile ./db/knexfile.js",
+    "down": "npx knex migrate:down --knexfile ./db/knexfile.js",
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vighnesh Kulkarni",
+  "license": "ISC"
+}
