@@ -17,9 +17,12 @@ router.route('/')
             Query the latest projects uploaded
         */
         if(sortBy === 'new') {
-            const project = await Project.query().orderBy('created_at', 'DESC');
-            console.log(project);
-            res.json(project);
+            const projects = await Project
+                .query()
+                .orderBy('created_at', 'DESC')
+                .withGraphFetched('proj');
+            console.log(projects);
+            res.json(projects);
         }
         /*
             @TRENDING
@@ -29,26 +32,28 @@ router.route('/')
             get the desc order based on the count
         */
         else if(sortBy === 'trending') {
-            const project = await Vote
+            const projects = await Vote
                 .query()
                 .select('project', 'created_at')
                 .where('created_at', '>=', new Date(Date.now() - 7 * 24*60*60 * 1000))
                 .count('project')
                 .groupBy('project', 'created_at')
-                .orderBy('count', 'DESC');                
+                .orderBy('count', 'DESC')
+                .withGraphFetched('proj');                
 
-            console.log('trending' ,project);
-            res.json(project);
+            console.log('trending' ,projects);
+            res.json(projects);
         }
         else if(sortBy === 'popular') {
-            const project = await Vote  
+            const projects = await Vote  
                 .query()
                 .select('project', 'created_at')
                 .count('project')
                 .groupBy('project', 'created_at')
-                .orderBy('count', 'DESC');
-            console.log('popular', project);
-            res.json(project);
+                .orderBy('count', 'DESC')
+                .withGraphFetched('proj');
+            console.log('popular', projects);
+            res.json(projects);
         }
     });
 
@@ -56,7 +61,8 @@ router.route('/:projectId')
     .get(async (req, res) => {
         const project = await Project 
             .query()
-            .findById(req.params.projectId);
+            .findById(req.params.projectId)
+            .withGraphFetched('vote');
         console.log(project);
         res.json(project);
     })
