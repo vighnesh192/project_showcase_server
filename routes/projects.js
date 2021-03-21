@@ -55,6 +55,18 @@ router.route('/')
             console.log('popular', projects);
             res.json(projects);
         }
+    })
+
+    .post(async (req, res) => {
+        console.log(req.body);
+        try {
+            const project = await Project
+                .query()
+                .insert(req.body);
+            res.json({status: 'Success'})
+        } catch (error) {
+            res.status(500).json({status: 'Failed', err: error});
+        }
     });
 
 router.route('/:projectId')

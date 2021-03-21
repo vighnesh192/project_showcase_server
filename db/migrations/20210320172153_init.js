@@ -20,8 +20,10 @@ exports.up = function(knex) {
          table.integer('project').references('id').inTable('project');
      })
      .createTable('user', (table) => {
-         table.increments();
-         table.string('username').notNullable();
+         table.increments('id');
+         table.string('first_name');
+         table.string('last_name');
+         table.string('username');
          table.string('bio', 1000);
          table.integer('avatar').references('id').inTable('image');
          table.string('linkedin');
@@ -31,6 +33,10 @@ exports.up = function(knex) {
          table.string('facebook');
          table.timestamps(true, true);
          table.datetime('deletedAt');
+     })
+     .createTable('google_user', (table) => {
+         table.string('id');
+         table.integer('user').references('id').inTable('user');
      })
      .createTable('project_user', (table) => {
          table.increments();
@@ -63,12 +69,14 @@ exports.up = function(knex) {
  };
  
  exports.down = function(knex) {
-   return knex.schema
-   .dropTableIfExists('comment')
-   .dropTableIfExists('vote')
-   .dropTableIfExists('image')
-   .dropTableIfExists('hash_tag')
-   .dropTableIfExists('project')
-   .dropTableIfExists('user');
+    return knex.schema
+    .dropTableIfExists('comment')
+    .dropTableIfExists('vote')
+    .dropTableIfExists('hash_tag')
+    .dropTableIfExists('project_user')
+    .dropTableIfExists('google_user')
+    .dropTableIfExists('user')
+    .dropTableIfExists('image')
+    .dropTableIfExists('project');
  };
  
