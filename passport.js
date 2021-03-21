@@ -1,4 +1,4 @@
-const GoogleStrategy = require('passport-google-oauth20');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('./db/models/User');
 const Google_User = require('./db/models/Google_User');
 const Image = require('./db/models/Image');
@@ -12,7 +12,6 @@ module.exports = function(passport) {
 				callbackURL: "/auth/google/callback",
 			},
 			async (accessToken, refreshToken, profile, done) => {
-                console.log('profile' ,profile);
                 const newUser = {
                     first_name: profile.name.givenName,
                     last_name: profile.name.familyName,
@@ -23,7 +22,9 @@ module.exports = function(passport) {
 
                     if(googleUser) {
                         done(null, googleUser);
-                    } else {
+                    } 
+                    else {
+                        console.log('GOOGLE NOT USER PRESENT:-')
                         let user = await User.query().insert(newUser);
 
                         const google_user = await Google_User.query()
@@ -43,14 +44,14 @@ module.exports = function(passport) {
                                 avatar: avatar.id
                             });
 
-                        console.log("USER", user);
+                        console.log("USER:-", user);
                         console.log("GOOGLE_USER", google_user);
                         console.log("AVATAR", avatar);
                         
                         done(null, user);
                     }
-
-                } catch (error) {
+                } 
+                catch (error) {
                     console.log(error);
                 }
 			}
@@ -61,15 +62,27 @@ module.exports = function(passport) {
 	// used to serialize(save) the user for the session
     // which sets req.session.passport.user = {id: 'xyz'}
 	passport.serializeUser(function (user, done) {
-        console.log('User', user);
-		done(null, user);
+		done(null, user.id);
 	});
 
 	// used to deserialize(extract) the user serialized to req.session.passport.user
     // The fetched object is attached to the request object as req.user
-	passport.deserializeUser(function (id, done) {
-		User.query().findById(id, function (err, user) {
-			done(err, user);
-		});
+	passport.deserializeUser(async function (id, done) {
+        console.log('IN DESERIALIZE:-', id);
+        try {
+            const user = await Google_User.query().findById(id);
+            if(user) {
+                done(null, user)
+            }
+            else {
+                done(null, user)
+            }
+        } catch (error) {
+            done(error, user);
+        }
+		// User.query().findById(id, function (err, user) {
+        //     console.log('IN DESERIALIZE 2:-', user);
+		// 	done(null, user);
+		// });
 	});
 }

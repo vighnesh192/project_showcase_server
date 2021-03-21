@@ -3,6 +3,7 @@ const express = require('express');
 const User = require('../db/models/User');
 const Project = require('../db/models/Project');
 const Vote = require('../db/models/Vote');
+const { ensureAuth, ensureGuest } = require('../middlewares/auth');
 
 const app = express();
 app.use(express.json());
@@ -10,7 +11,7 @@ app.use(express.json());
 const router = express.Router();
 
 router.route('/')
-    .get(async (req, res) => {
+    .get(ensureAuth, async (req, res) => {
         const {sortBy} = req.query;
         /*
             @NEW
@@ -70,7 +71,7 @@ router.route('/')
     });
 
 router.route('/:projectId')
-    .get(async (req, res) => {
+    .get(ensureGuest, async (req, res) => {
         const project = await Project 
             .query()
             .findById(req.params.projectId)
