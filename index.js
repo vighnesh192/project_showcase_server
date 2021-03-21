@@ -2,6 +2,8 @@ const dbSetup = require('./db/db-setup');
 const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+require('dotenv');
 
 // Passport config
 require('./passport')(passport);
@@ -16,11 +18,26 @@ const app = express();
 app.use(express.json());
 
 // Sessions
-app.use(session({
-    secret: 'keyboard cat',
+const sessionPool = require('pg').Pool;
+const sessionDBaccess = new sessionPool({
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DATABASE
+});
+const sessionConfig = {
+    store: new pgSession({
+        pool: sessionDBaccess,
+        tableName: 'session'
+    }),
+    name: 'SID',
+    secret: process.env.SECRET,
     resave: false,
-    saveUninitialized: false
-}))
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
+};
+app.use(session(sessionConfig));
 
 // Passport Middlewares
 app.use(passport.initialize());
