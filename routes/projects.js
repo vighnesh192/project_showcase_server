@@ -57,7 +57,8 @@ router.route('/')
             res.json(projects);
         }
     })
-
+    // @desc Upload a Project
+    // @route POST /projects/
     .post(async (req, res) => {
         console.log(req.body);
         try {
@@ -70,6 +71,8 @@ router.route('/')
         }
     });
 
+// @desc Get a Project
+// @route GET /projects/:projectId
 router.route('/:projectId')
     .get(ensureGuest, async (req, res) => {
         const project = await Project 

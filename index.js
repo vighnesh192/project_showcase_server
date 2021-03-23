@@ -43,7 +43,7 @@ app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use('/user', usersRouter);
+app.use('/users', usersRouter);
 app.use('/projects', projectsRouter);
 app.use('/auth', authRouter);
 

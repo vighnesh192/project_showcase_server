@@ -38,11 +38,13 @@ exports.up = function(knex) {
          table.string('id');
          table.integer('user').references('id').inTable('user');
      })
+     // @desc  Project belongs to which User
      .createTable('project_user', (table) => {
          table.increments();
          table.integer('user').references('id').inTable('user');
          table.integer('project').references('id').inTable('project');
      })
+     // @desc  Vote given by a User
      .createTable('vote', (table) => {
          table.increments();
          table.integer('user').references('id').inTable('user');

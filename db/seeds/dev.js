@@ -89,12 +89,14 @@ exports.seed = async function(knex) {
     deletedAt: null
   }]);
 
+  // @desc  Project belongs to which User
   await knex('project_user').insert([{
     id: 1,
     user: 1,
     project: 1
   }])
 
+  // @desc  Vote given by a User
   await knex('vote').insert([{
     id: 1,
     user: 1,
