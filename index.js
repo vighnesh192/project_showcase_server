@@ -3,6 +3,7 @@ const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
+const cors = require('cors');
 require('dotenv');
 
 // Passport config
@@ -15,6 +16,7 @@ const authRouter = require('./routes/auth');
 dbSetup();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // Sessions

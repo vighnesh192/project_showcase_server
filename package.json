@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "connect-pg-simple": "^6.2.1",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
@@ -15,7 +16,6 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.5.1"
   },
-  "devDependencies": {},
   "scripts": {
     "seed": "npx knex seed:run --knexfile ./db/knexfile.js",
     "make-seed": "npx knex seed:make dev --knexfile ./db/knexfile.js",

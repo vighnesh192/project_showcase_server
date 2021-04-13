@@ -62,23 +62,27 @@ module.exports = function(passport) {
 	// used to serialize(save) the user for the session
     // which sets req.session.passport.user = {id: 'xyz'}
 	passport.serializeUser(function (user, done) {
-		done(null, user.id);
+		done(null, user);
 	});
 
 	// used to deserialize(extract) the user serialized to req.session.passport.user
     // The fetched object is attached to the request object as req.user
-	passport.deserializeUser(async function (id, done) {
-        console.log('IN DESERIALIZE:-', id);
+	passport.deserializeUser(async function (USER, done) {
+        console.log('IN DESERIALIZE:-', USER);
         try {
-            const user = await Google_User.query().findById(id);
+            const user = await User
+                .query()
+                .findById(USER.user)
+                .withGraphFetched('profilePic');;
             if(user) {
+                console.log("USER:-", user);
                 done(null, user)
             }
             else {
                 done(null, user)
             }
         } catch (error) {
-            done(error, user);
+            done(error, null);
         }
 		// User.query().findById(id, function (err, user) {
         //     console.log('IN DESERIALIZE 2:-', user);
