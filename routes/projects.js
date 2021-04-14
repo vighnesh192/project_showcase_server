@@ -18,12 +18,17 @@ router.route('/')
             Query the latest projects uploaded
         */
         if(sortBy === 'new') {
-            const projects = await Project
+            try {
+                const projects = await Project
                 .query()
                 .orderBy('created_at', 'DESC')
                 .withGraphFetched('proj');
-            console.log(projects);
-            res.json(projects);
+                console.log(projects);
+                res.json(projects);
+            } catch (error) {
+                res.status(404).json({msg: 'Not found'});
+            }
+            
         }
         /*
             @TRENDING
@@ -33,7 +38,8 @@ router.route('/')
             get the desc order based on the count
         */
         else if(sortBy === 'trending') {
-            const projects = await Vote
+            try {
+                const projects = await Vote
                 .query()
                 .select('project', 'created_at')
                 .where('created_at', '>=', new Date(Date.now() - 7 * 24*60*60 * 1000))
@@ -42,19 +48,26 @@ router.route('/')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj');                
 
-            console.log('trending' ,projects);
-            res.json(projects);
+                console.log('trending' ,projects);
+                res.json(projects);
+            } catch (error) {
+                res.status(404).json({msg: 'Not found'});
+            }
         }
         else if(sortBy === 'popular') {
-            const projects = await Vote  
+            try {
+                const projects = await Vote  
                 .query()
                 .select('project', 'created_at')
                 .count('project')
                 .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj');
-            console.log('popular', projects);
-            res.json(projects);
+                console.log('popular', projects);
+                res.json(projects);
+            } catch (error) {
+                res.status(404).json({msg: 'Not found'});
+            }
         }
     })
     // @desc Upload a Project
