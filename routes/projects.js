@@ -11,7 +11,7 @@ app.use(express.json());
 const router = express.Router();
 
 router.route('/')
-    .get(ensureAuth, async (req, res) => {
+    .get(async (req, res) => {
         const {sortBy} = req.query;
         /*
             @NEW
@@ -46,7 +46,8 @@ router.route('/')
                 .count('project')
                 .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
-                .withGraphFetched('proj');                
+                .withGraphFetched('proj')
+                .withGraphFetched('user');                
 
                 console.log('trending' ,projects);
                 res.json(projects);
@@ -62,7 +63,8 @@ router.route('/')
                 .count('project')
                 .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
-                .withGraphFetched('proj');
+                .withGraphFetched('proj')
+                .withGraphFetched('user');
                 console.log('popular', projects);
                 res.json(projects);
             } catch (error) {
