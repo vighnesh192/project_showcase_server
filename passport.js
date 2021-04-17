@@ -24,7 +24,7 @@ module.exports = function(passport) {
                         done(null, googleUser);
                     } 
                     else {
-                        console.log('GOOGLE NOT USER PRESENT:-')
+                        // console.log('GOOGLE NOT USER PRESENT:-')
                         let user = await User.query().insert(newUser);
 
                         const google_user = await Google_User.query()
@@ -44,9 +44,9 @@ module.exports = function(passport) {
                                 avatar: avatar.id
                             });
 
-                        console.log("USER:-", user);
-                        console.log("GOOGLE_USER", google_user);
-                        console.log("AVATAR", avatar);
+                        // console.log("USER:-", user);
+                        // console.log("GOOGLE_USER", google_user);
+                        // console.log("AVATAR", avatar);
                         
                         done(null, user);
                     }
@@ -68,14 +68,12 @@ module.exports = function(passport) {
 	// used to deserialize(extract) the user serialized to req.session.passport.user
     // The fetched object is attached to the request object as req.user
 	passport.deserializeUser(async function (USER, done) {
-        console.log('IN DESERIALIZE:-', USER);
         try {
             const user = await User
                 .query()
                 .findById(USER.user)
                 .withGraphFetched('profilePic');;
             if(user) {
-                console.log("USER:-", user);
                 done(null, user)
             }
             else {

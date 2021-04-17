@@ -1,4 +1,5 @@
 const {Model} = require('objection');
+const Image = require('./Image');
 const User = require('./User');
 
 class Vote extends Model {
