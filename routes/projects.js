@@ -22,10 +22,11 @@ router.route('/')
                 const projects = await Project
                 .query()
                 .orderBy('created_at', 'DESC')
-                .withGraphFetched('proj');
-                console.log(projects);
+                .withGraphFetched('user');
+                console.log('NEW PROJECTS', projects);
                 res.json(projects);
             } catch (error) {
+                console.log(error);
                 res.status(404).json({msg: 'Not found'});
             }
             
@@ -49,8 +50,25 @@ router.route('/')
                 .withGraphFetched('proj')
                 .withGraphFetched('user');                
 
-                console.log('trending' ,projects);
-                res.json(projects);
+                let updatedProjects = await projects.map(async (project, index) => {
+                    //Remove IF code after updating the seed data
+                    if(project.user.length == 0) {
+                        return project;
+                    }
+                    else {
+                        let projWithUser = await Promise.all(project.user.map(async (user, i) => {
+                            let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
+                            projects[index].user[i]["profilePic"] = avatar.profilePic;
+                            console.log('PROJECT:-', project)
+                            return project;
+                        }));
+                        return projWithUser[0];
+                    }
+                });
+
+                const promises = await Promise.all(updatedProjects);
+                console.log('PROJECTS:-', promises);
+                res.json(promises);
             } catch (error) {
                 res.status(404).json({msg: 'Not found'});
             }
@@ -67,13 +85,12 @@ router.route('/')
                 .withGraphFetched('user');
 
                 let updatedProjects = await projects.map(async (project, index) => {
+                    //Remove IF code after updating the seed data
                     if(project.user.length == 0) {
-                        console.log('HERE');
                         return project;
                     }
                     else {
                         let projWithUser = await Promise.all(project.user.map(async (user, i) => {
-                            // console.log("USER:-", user, index);
                             let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
                             projects[index].user[i]["profilePic"] = avatar.profilePic;
                             console.log('PROJECT:-', project)
@@ -84,14 +101,7 @@ router.route('/')
                 });
 
                 const promises = await Promise.all(updatedProjects);
-                // projects.map((vote) => {
-                //     vote.user.map((user) => {
-                //         console.log('AVATARS:-', user.withGraphFetched('profilePic'));
-                //     })
-                // }) 
-                
                 console.log('PROJECTS:-', promises);
-                // await console.log('PROJECTS:-', updatedProjects[2].user[0]);
                 res.json(promises);
             } catch (error) {
                 console.log(error);
