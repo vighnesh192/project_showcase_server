@@ -35,10 +35,11 @@ router.route('/')
                     .select('vote.project')
                     .groupBy('vote.project')
                     .withGraphJoined('user')
-                    .select('user.id as userId', 'vote.id as voteId')
+                    .select('user.id as userId', 'vote.id as voteId', 'user.avatar')
                     .groupBy('user.id', 'vote.id')
 
-                let groupBy = function(data, key) { // `data` is an array of objects, `key` is the key (or property accessor) to group by
+                let groupBy = function(data, key) { 
+                    // `data` is an array of objects, `key` is the key (or property accessor) to group by
                     // reduce runs this anonymous function on each element of `data` (the `item` parameter,
                     // returning the `storage` parameter at the end
                     return data.reduce(function(storage, item) {
@@ -59,15 +60,21 @@ router.route('/')
                 let popularUsers = groupBy(users, 'userId');
                 let popularUsersArray = [];
                 for (let user in popularUsers) {
-                    popularUsersArray.push([popularUsers[user]]);
+                    popularUsersArray.push(popularUsers[user]);
                 };
                 popularUsersArray.sort((a, b) => {
-                    return b[0].length - a[0].length;
+                    return b.length - a.length;
                 })
+
+                let usersWithAvatar = await Promise.all(popularUsersArray.map(async (user, index) => {
+                    let avatar = await User.query().findById(user[0].userId).withGraphFetched('profilePic');
+                    popularUsersArray[index][0]["profilePic"] = avatar.profilePic;
+                    return user;
+                }));
                 
-                if(users) {
+                if(usersWithAvatar) {
                     // res.json({users, NewUsers});
-                    res.json(popularUsersArray)
+                    res.json(usersWithAvatar)
                 }
                 else {
                     res.json({ 'error': 'No users found' });
