@@ -1,4 +1,5 @@
 const express = require('express');
+const { fn, ref } = require('objection');
 
 const User = require('../db/models/User');
 const Project = require('../db/models/Project');
@@ -27,18 +28,39 @@ router.route('/')
         else {
             const { sortBy } = req.query
             
-            // @desc Get users ordered by Most Voted Projects
+            // @desc Get users ordered by Most no of Votes on their Projects
             // @route GET /users/?sortBy=popular
             if(sortBy == 'popular') {
                 let users = await Vote.query()
-                    .withGraphFetched('user')
-                    .select('project', 'created_at')
-                    .count('project')
-                    .groupBy('project', 'created_at')
-                    .orderBy('count', 'DESC');
+                    .select('vote.project')
+                    .groupBy('vote.project')
+                    .withGraphJoined('user')
+                    .select('user.id as userId', 'vote.id as voteId')
+                    .groupBy('user.id', 'vote.id')
+
+                let groupBy = function(data, key) { // `data` is an array of objects, `key` is the key (or property accessor) to group by
+                    // reduce runs this anonymous function on each element of `data` (the `item` parameter,
+                    // returning the `storage` parameter at the end
+                    return data.reduce(function(storage, item) {
+                        // get the first instance of the key by which we're grouping
+                        let group = item[key];
+                        
+                        // set `storage` for this instance of group to the outer scope (if not empty) or initialize it
+                        storage[group] = storage[group] || [];
+                        
+                        // add this item to its group within `storage`
+                        storage[group].push(item);
+                        
+                        // return the updated storage to the reduce function, which will then loop through the next 
+                        return storage; 
+                    }, {}); // {} is the initial value of the storage
+                };
+
+                let popularUsers = groupBy(users, 'userId');
                 
                 if(users) {
-                    res.json(users);
+                    // res.json({users, NewUsers});
+                    res.json(popularUsers)
                 }
                 else {
                     res.json({ 'error': 'No users found' });

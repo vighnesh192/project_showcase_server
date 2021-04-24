@@ -73,14 +73,18 @@ router.route('/')
                 res.status(404).json({msg: 'Not found'});
             }
         }
+        /*
+            @POPULAR
+            Get the most voted projects of all time
+        */
         else if(sortBy === 'popular') {
             try {
                 let projects = await Vote  
                 .query()
                 .select('project', 'created_at')
-                .count('project')
-                .groupBy('project', 'created_at')
-                .orderBy('count', 'DESC')
+                // .count('project')
+                // .groupBy('project', 'created_at')
+                // .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
                 .withGraphFetched('user');
 
@@ -109,6 +113,7 @@ router.route('/')
             }
         }
     })
+    
     // @desc Upload a Project
     // @route POST /projects/
     .post(async (req, res) => {
