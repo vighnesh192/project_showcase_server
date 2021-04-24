@@ -57,10 +57,17 @@ router.route('/')
                 };
 
                 let popularUsers = groupBy(users, 'userId');
+                let popularUsersArray = [];
+                for (let user in popularUsers) {
+                    popularUsersArray.push([popularUsers[user]]);
+                };
+                popularUsersArray.sort((a, b) => {
+                    return b[0].length - a[0].length;
+                })
                 
                 if(users) {
                     // res.json({users, NewUsers});
-                    res.json(popularUsers)
+                    res.json(popularUsersArray)
                 }
                 else {
                     res.json({ 'error': 'No users found' });
