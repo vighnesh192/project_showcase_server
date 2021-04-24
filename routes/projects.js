@@ -82,9 +82,9 @@ router.route('/')
                 let projects = await Vote  
                 .query()
                 .select('project', 'created_at')
-                // .count('project')
-                // .groupBy('project', 'created_at')
-                // .orderBy('count', 'DESC')
+                .count('project')
+                .groupBy('project', 'created_at')
+                .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
                 .withGraphFetched('user');
 
