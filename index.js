@@ -49,6 +49,8 @@ app.use('/users', usersRouter);
 app.use('/projects', projectsRouter);
 app.use('/auth', authRouter);
 
+app.use(express.static('public'));
+
 app.listen(8080, () => {
     console.log('Server running on port 8080');
 })

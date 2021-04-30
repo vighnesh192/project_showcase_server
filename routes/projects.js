@@ -1,9 +1,13 @@
 const express = require('express');
+const multer = require('multer');
 
 const User = require('../db/models/User');
 const Project = require('../db/models/Project');
 const Vote = require('../db/models/Vote');
+const Project_User = require('../db/models/Project_User');
 const { ensureAuth, ensureGuest } = require('../middlewares/auth');
+const { default: upload } = require('../services/multerServices');
+const Image = require('../db/models/Image');
 
 const app = express();
 app.use(express.json());
@@ -135,15 +139,27 @@ router.route('/')
     // @desc Upload a Project
     // @route POST /projects/
     .post(async (req, res) => {
-        console.log(req.body);
-        try {
-            const project = await Project
-                .query()
-                .insert(req.body);
-            res.json({status: 'Success'})
-        } catch (error) {
-            res.status(500).json({status: 'Failed', err: error});
-        }
+        upload(req, res, (err) => {
+            if(err) {
+                res.sendStatus(500);
+            }
+            console.log(req.body);
+            try {
+                const project = await Project
+                    .query()
+                    .insert(req.body);
+                const project_user = await Project_User
+                    .query()
+                    .insert({project: project.id, user = req.user.id});
+                const image = await Image
+                    .query()
+                    .insert({project: project.id, url: req.file.path});
+                    
+                res.json({ projectDetails: req.body, image: req.file })
+            } catch (error) {
+                res.status(500).json({status: 'Failed', err: error});
+            }
+        })
     });
 
 // @desc Get a Project
