@@ -9,7 +9,7 @@ class Project extends Model {
         const Vote = require('./Vote');
         const User = require('./User');
         return {
-            vote: {
+            allVotes: {
                 relation: Model.HasManyRelation,
                 modelClass: Vote,
                 join: {
@@ -18,6 +18,7 @@ class Project extends Model {
                 }
             },
              
+            // Project Posted By
             user: {
                 relation: Model.ManyToManyRelation,
                 modelClass: User,

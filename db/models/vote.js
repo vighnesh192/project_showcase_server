@@ -19,6 +19,7 @@ class Vote extends Model {
                 },
             },
 
+            //Project Posted By
             user: {
                 relation: Model.ManyToManyRelation,
                 modelClass: User,
@@ -31,6 +32,15 @@ class Vote extends Model {
                     },
                     to: "user.id",
                 },
+            },
+
+            allVotes: {
+                relation: Model.HasManyRelation,
+                modelClass: Vote,
+                join: {
+                  from: 'vote.project',
+                  to: 'vote.project'
+                }
             },
         };
     };

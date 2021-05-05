@@ -99,7 +99,7 @@ exports.seed = async function(knex) {
   // @desc  Vote given by a User
   await knex('vote').insert([{
     id: 1,
-    user: 1,
+    user: 1, //User who has given the vote
     project: 1,
     value: 1,
     deletedAt: null

@@ -26,7 +26,8 @@ router.route('/')
                 const projects = await Project
                 .query()
                 .orderBy('created_at', 'DESC')
-                .withGraphFetched('user');
+                .withGraphFetched('user')
+                .withGraphFetched('allVotes');
                 console.log('NEW PROJECTS', projects);
                 let updatedProjects = await projects.map(async (project, index) => {
                     //Remove IF code after updating the seed data
@@ -70,7 +71,8 @@ router.route('/')
                 .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
-                .withGraphFetched('user');                
+                .withGraphFetched('user')
+                .withGraphFetched('allVotes');  // @TODO  Try to optimize allVotes ;                
 
                 let updatedProjects = await projects.map(async (project, index) => {
                     //Remove IF code after updating the seed data
@@ -108,7 +110,8 @@ router.route('/')
                 .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
-                .withGraphFetched('user');
+                .withGraphFetched('user')
+                .withGraphFetched('allVotes');  // @TODO  Try to optimize allVotes 
 
                 let updatedProjects = await projects.map(async (project, index) => {
                     //Remove IF code after updating the seed data
