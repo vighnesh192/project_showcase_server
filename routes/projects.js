@@ -139,7 +139,7 @@ router.route('/')
     // @desc Upload a Project
     // @route POST /projects/
     .post(async (req, res) => {
-        upload(req, res, (err) => {
+        upload(req, res, async (err) => {
             if(err) {
                 res.sendStatus(500);
             }
@@ -150,7 +150,7 @@ router.route('/')
                     .insert(req.body);
                 const project_user = await Project_User
                     .query()
-                    .insert({project: project.id, user = req.user.id});
+                    .insert({project: project.id, user: req.user.id});
                 const image = await Image
                     .query()
                     .insert({project: project.id, url: req.file.path});
