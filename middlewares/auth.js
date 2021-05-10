@@ -1,9 +1,11 @@
 module.exports = {
     ensureAuth: function (req, res, next) {
         if(req.isAuthenticated()) {
+            console.log('in auth');
             return next();
         }
         else {
+            console.log('in auth error');
             res.redirect('/auth/google')
         }
     },

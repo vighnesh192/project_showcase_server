@@ -16,6 +16,7 @@ router.get('/google/callback', passport.authenticate('google', { failureRedirect
 
 router.get('/checkLogin', (req, res) => {
     if(req.user) {
+        console.log("SESSION:-", req.user, req.session.passport.user)
         res.json(req.user);
     }
     else {

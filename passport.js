@@ -17,20 +17,23 @@ module.exports = function(passport) {
                     last_name: profile.name.familyName,
                 }
 
+                console.log('PROFILE:-', profile);
+
                 try {
                     let googleUser = await Google_User.query().findById(profile.id)
 
                     if(googleUser) {
-                        done(null, googleUser);
+                        let user = await User.query().findById(googleUser.userId);
+                        done(null, user);
                     } 
                     else {
-                        // console.log('GOOGLE NOT USER PRESENT:-')
+                        console.log('GOOGLE NOT USER PRESENT:-')
                         let user = await User.query().insert(newUser);
 
                         const google_user = await Google_User.query()
                             .insert({
                                 id: profile.id,
-                                user: user.id 
+                                userId: user.id 
                             });
                         
                         const avatar = await Image.query()
@@ -38,15 +41,17 @@ module.exports = function(passport) {
                                 url: profile.photos[0].value
                             });
 
-                        user = await User.query()
-                            .findById(user.id)
+                        let userWithAvatar = await User.query()
+                            .findById(google_user.userId)
                             .patch({
                                 avatar: avatar.id
                             });
 
-                        // console.log("USER:-", user);
-                        // console.log("GOOGLE_USER", google_user);
-                        // console.log("AVATAR", avatar);
+                        user = await User.query().findById(google_user.userId).withGraphFetched('profilePic')
+
+                        console.log("USER in STRATEGY:-", user);
+                        console.log("GOOGLE_USER", google_user);
+                        console.log("AVATAR", avatar);
                         
                         done(null, user);
                     }
@@ -71,15 +76,16 @@ module.exports = function(passport) {
         try {
             const user = await User
                 .query()
-                .findById(USER.user)
-                .withGraphFetched('profilePic');;
+                .findById(USER.id)
+                .withGraphFetched('profilePic');
             if(user) {
                 done(null, user)
             }
             else {
                 done(null, user)
             }
-        } catch (error) {
+        } 
+        catch (error) {
             done(error, null);
         }
 		// User.query().findById(id, function (err, user) {
