@@ -22,7 +22,7 @@ class Project_User extends Model {
                 relation: Model.HasManyRelation,
                 modelClass: User,
                 join: {
-                    from: 'project_user.user',
+                    from: 'project_user.projOwner',
                     to: 'user.id'
                 }
             },

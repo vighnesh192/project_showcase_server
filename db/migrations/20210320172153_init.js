@@ -36,18 +36,18 @@ exports.up = function(knex) {
      })
      .createTable('google_user', (table) => {
          table.string('id');
-         table.integer('user').references('id').inTable('user');
+         table.integer('userId').references('id').inTable('user');
      })
      // @desc  Project belongs to which User
      .createTable('project_user', (table) => {
          table.increments();
-         table.integer('user').references('id').inTable('user');
+         table.integer('projOwner').references('id').inTable('user');
          table.integer('project').references('id').inTable('project');
      })
      // @desc  Vote given by a User
      .createTable('vote', (table) => {
          table.increments();
-         table.integer('user').references('id').inTable('user');
+         table.integer('votedBy').references('id').inTable('user');
          table.integer('project').references('id').inTable('project');
          table.integer('value');
          table.timestamps(true, true);
@@ -55,7 +55,7 @@ exports.up = function(knex) {
      })
      .createTable('comment', (table) => {
          table.increments();
-         table.integer('user').references('id').inTable('user');
+         table.integer('commentBy').references('id').inTable('user');
          table.integer('project').references('id').inTable('project');
          table.string('title', 50);
          table.string('body', 1000);

@@ -4,6 +4,7 @@ exports.seed = async function(knex) {
   await knex.raw('TRUNCATE TABLE "user" CASCADE');
   await knex.raw('TRUNCATE TABLE "image" CASCADE');
   await knex.raw('TRUNCATE TABLE "project" CASCADE');
+  await knex.raw('TRUNCATE TABLE "project_user" CASCADE');
   await knex.raw('TRUNCATE TABLE "vote" CASCADE');
   await knex.raw('TRUNCATE TABLE "comment" CASCADE');
   // await knex.raw('TRUNCATE TABLE "hash_tag" CASCADE');
@@ -92,44 +93,54 @@ exports.seed = async function(knex) {
   // @desc  Project belongs to which User
   await knex('project_user').insert([{
     id: 1,
-    user: 1,
+    projOwner: 1,
     project: 1
+  },
+  {
+    id: 2,
+    projOwner: 2,
+    project: 2
+  },
+  {
+    id: 3,
+    projOwner: 3,
+    project: 3
   }])
 
   // @desc  Vote given by a User
   await knex('vote').insert([{
     id: 1,
-    user: 1, //User who has given the vote
+    votedBy: 1, //votedBy who has given the vote
     project: 1,
     value: 1,
     deletedAt: null
   }, {
     id: 2,
-    user: 3,
+    votedBy: 3,
     project: 2,
     value: 1,
     deletedAt: null
   }, {
     id: 3,
-    user: 2,
+    votedBy: 2,
     project: 2,
     value: 1,
     deletedAt: null
   }, {
     id: 4,
-    user: 1,
+    votedBy: 1,
     project: 2,
     value: 1,
     deletedAt: null
   }, {
     id: 5,
-    user: 1,
+    votedBy: 1,
     project: 3,
     value: 1,
     deletedAt: null
   }, {
     id: 6,
-    user: 2,
+    votedBy: 2,
     project: 3,
     value: 1,
     deletedAt: null
@@ -137,7 +148,7 @@ exports.seed = async function(knex) {
 
   return knex('comment').insert([{
     id: 1,
-    user: 1,
+    commentBy: 1,
     project: 1,
     title: 'comment1',
     body: 'comment body 1',

@@ -28,7 +28,7 @@ class Vote extends Model {
                     through: {
                         // project_user is the join table.
                         from: "project_user.project",
-                        to: "project_user.user",
+                        to: "project_user.projOwner",
                     },
                     to: "user.id",
                 },
