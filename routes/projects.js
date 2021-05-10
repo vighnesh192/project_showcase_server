@@ -28,7 +28,6 @@ router.route('/')
                 .orderBy('created_at', 'DESC')
                 .withGraphFetched('user')
                 .withGraphFetched('allVotes');
-                console.log('NEW PROJECTS', projects);
                 let updatedProjects = await projects.map(async (project, index) => {
                     //Remove IF code after updating the seed data
                     if(project.user.length == 0) {
@@ -38,7 +37,6 @@ router.route('/')
                         let projWithUser = await Promise.all(project.user.map(async (user, i) => {
                             let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
                             projects[index].user[i]["profilePic"] = avatar.profilePic;
-                            console.log('PROJECT:-', project)
                             return project;
                         }));
                         return projWithUser[0];
@@ -46,10 +44,8 @@ router.route('/')
                 });
 
                 const promises = await Promise.all(updatedProjects);
-                console.log('PROJECTS:-', promises);
                 res.json(promises);
             } catch (error) {
-                console.log(error);
                 res.status(404).json({msg: 'Not found'});
             }
             
@@ -83,7 +79,6 @@ router.route('/')
                         let projWithUser = await Promise.all(project.user.map(async (user, i) => {
                             let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
                             projects[index].user[i]["profilePic"] = avatar.profilePic;
-                            console.log('PROJECT:-', project)
                             return project;
                         }));
                         return projWithUser[0];
@@ -91,7 +86,6 @@ router.route('/')
                 });
 
                 const promises = await Promise.all(updatedProjects);
-                console.log('PROJECTS:-', promises);
                 res.json(promises);
             } catch (error) {
                 res.status(404).json({msg: 'Not found'});
@@ -102,12 +96,13 @@ router.route('/')
             Get the most voted projects of all time
         */
         else if(sortBy === 'popular') {
+            
             try {
                 let projects = await Vote  
                 .query()
-                .select('project', 'created_at')
+                .select('project')
+                .groupBy('project')
                 .count('project')
-                .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
                 .withGraphFetched('user')
@@ -122,7 +117,6 @@ router.route('/')
                         let projWithUser = await Promise.all(project.user.map(async (user, i) => {
                             let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
                             projects[index].user[i]["profilePic"] = avatar.profilePic;
-                            console.log('PROJECT:-', project)
                             return project;
                         }));
                         return projWithUser[0];
@@ -130,7 +124,6 @@ router.route('/')
                 });
 
                 const promises = await Promise.all(updatedProjects);
-                console.log('PROJECTS:-', promises);
                 res.json(promises);
             } catch (error) {
                 console.log(error);
@@ -146,14 +139,13 @@ router.route('/')
             if(err) {
                 res.sendStatus(500);
             }
-            console.log(req.body);
             try {
                 const project = await Project
                     .query()
                     .insert(req.body);
                 const project_user = await Project_User
                     .query()
-                    .insert({project: project.id, user: req.user.id});
+                    .insert({project: project.id, projOwner: req.user.id});
                 const image = await Image
                     .query()
                     .insert({project: project.id, url: req.file.path});
@@ -175,6 +167,51 @@ router.route('/:projectId')
             .withGraphFetched('vote');
         console.log(project);
         res.json(project);
+    })
+
+router.route('/vote')
+    .post(async (req, res) => {
+        const checkIfAlreadyVoted = await Vote
+            .query()
+            .where({
+                votedBy: req.user.id,
+                project: req.body.project
+            });
+        if(checkIfAlreadyVoted.length > 0) {
+            try {
+                const deleteVote = await Vote
+                    .query()
+                    .delete()
+                    .where({
+                        votedBy: req.user.id,
+                        project: req.body.project
+                    })
+                res.json({ success: true })
+            } 
+            catch (error) {
+                console.log(error)
+                res.json({ success: false })
+            }
+        }
+        else {
+            try {
+                const userId = await req.user.id;
+                const data = {
+                    votedBy: req.user.id,
+                    project: req.body.project,
+                    value: 1,
+                    deletedAt: null
+                }
+                const vote = await Vote
+                    .query()
+                    .insert(data)
+                res.json({ success: true, vote });
+            } 
+            catch (error) {
+                console.log(error)
+                res.json({ success: false });
+            }
+        }
     })
 
 module.exports = router;
