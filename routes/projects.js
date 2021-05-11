@@ -61,10 +61,10 @@ router.route('/')
             try {
                 const projects = await Vote
                 .query()
-                .select('project', 'created_at')
+                .select('project')
                 .where('created_at', '>=', new Date(Date.now() - 7 * 24*60*60 * 1000))
+                .groupBy('project')
                 .count('project')
-                .groupBy('project', 'created_at')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
                 .withGraphFetched('user')
@@ -88,6 +88,7 @@ router.route('/')
                 const promises = await Promise.all(updatedProjects);
                 res.json(promises);
             } catch (error) {
+                console.log(error)
                 res.status(404).json({msg: 'Not found'});
             }
         }
