@@ -78,10 +78,16 @@ upstream        https://github.com/vighnesh192/project_showcase_server.git (push
     ```bash
     psql -f "<PATH-TO-PROJECT-FOLDER>\node_modules\connect-pg-simple\table.sql"  
     ```
+### 6. 📌 Setting up .env file :
+
+1. Create a new file `.env` in the root directory.
+2. Copy all the default content from the `.env.example` file to the `.env` file.
+3. You need to edit this `.env` file to provide your own credentials.
 
 Your application setup is successfully completed!
+
 <a id="run-app"></a>
-### 6. Running the app
+### 7. Running the app
 
     ```bash
     # development
