@@ -170,8 +170,10 @@ router.route('/:projectId')
         res.json(project);
     })
 
+// @desc Upvote
+// @route GET /projects/vote
 router.route('/vote')
-    .post(async (req, res) => {
+    .post(ensureAuth, async (req, res) => {
         const checkIfAlreadyVoted = await Vote
             .query()
             .where({
