@@ -6,7 +6,7 @@ const Project = require('../db/models/Project');
 const Vote = require('../db/models/Vote');
 const Project_User = require('../db/models/Project_User');
 const { ensureAuth, ensureGuest } = require('../middlewares/auth');
-const { default: upload } = require('../services/multerServices');
+const upload = require('../services/multerServices');
 const Image = require('../db/models/Image');
 
 const app = express();
@@ -135,24 +135,30 @@ router.route('/')
     
     // @desc Upload a Project
     // @route POST /projects/
-    .post(async (req, res) => {
+    .post(ensureAuth, async (req, res) => {
         upload(req, res, async (err) => {
             if(err) {
+                console.log('ERR', err)
                 res.sendStatus(500);
             }
             try {
+                const { title, tagline, description, website, github, youtube } = req.body; 
+                const data = { title, tagline, description, website, github, youtube };
                 const project = await Project
                     .query()
-                    .insert(req.body);
-                const project_user = await Project_User
-                    .query()
-                    .insert({project: project.id, projOwner: req.user.id});
-                const image = await Image
-                    .query()
-                    .insert({project: project.id, url: req.file.path});
-                    
-                res.json({ projectDetails: req.body, image: req.file })
+                    .insert(data)
+                    .then(async (project) => {
+                        console.log('USER', req.user);
+                        const project_user = await Project_User
+                            .query()
+                            .insert({project: project.id, projOwner: req.user.id});
+                        const image = await Image
+                            .query()
+                            .insert({project: project.id, url: req.file.path});    
+                        res.json({ projectDetails: req.body, image: req.file })
+                    });
             } catch (error) {
+                console.log(error)
                 res.status(500).json({status: 'Failed', err: error});
             }
         })
