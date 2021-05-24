@@ -27,7 +27,8 @@ router.route('/')
                 .query()
                 .orderBy('created_at', 'DESC')
                 .withGraphFetched('user')
-                .withGraphFetched('allVotes');
+                .withGraphFetched('allVotes')
+                .withGraphFetched('image');
                 let updatedProjects = await projects.map(async (project, index) => {
                     //Remove IF code after updating the seed data
                     if(project.user.length == 0) {
@@ -66,6 +67,7 @@ router.route('/')
                 .groupBy('project')
                 .count('project')
                 .orderBy('count', 'DESC')
+                .withGraphFetched('image')
                 .withGraphFetched('proj')
                 .withGraphFetched('user')
                 .withGraphFetched('allVotes');  // @TODO  Try to optimize allVotes ;                
@@ -107,7 +109,8 @@ router.route('/')
                 .orderBy('count', 'DESC')
                 .withGraphFetched('proj')
                 .withGraphFetched('user')
-                .withGraphFetched('allVotes');  // @TODO  Try to optimize allVotes 
+                .withGraphFetched('allVotes')
+                .withGraphFetched('image');  // @TODO  Try to optimize allVotes 
 
                 let updatedProjects = await projects.map(async (project, index) => {
                     //Remove IF code after updating the seed data
@@ -154,7 +157,7 @@ router.route('/')
                             .insert({project: project.id, projOwner: req.user.id});
                         const image = await Image
                             .query()
-                            .insert({project: project.id, url: req.file.path});    
+                            .insert({project: project.id, url: req.file.filename});    
                         res.json({ projectDetails: req.body, image: req.file })
                     });
             } catch (error) {

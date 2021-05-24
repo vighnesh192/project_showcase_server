@@ -1,6 +1,4 @@
 const {Model} = require('objection');
-const Image = require('./Image');
-const User = require('./User');
 
 class Vote extends Model {
     static get tableName() {
@@ -8,7 +6,9 @@ class Vote extends Model {
     }
 
     static get relationMappings() {
+        const User = require('./User');
         const Project = require('./Project');
+        const Image = require('./Image');
         return {
             proj: {
                 relation: Model.BelongsToOneRelation,
@@ -42,6 +42,15 @@ class Vote extends Model {
                   to: 'vote.project'
                 }
             },
+
+            image: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: Image,
+                join: {
+                    from: "vote.project",
+                    to: "image.project"
+                },
+            }
         };
     };
 }

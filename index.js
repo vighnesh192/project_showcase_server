@@ -5,6 +5,7 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const cors = require('cors');
 require('dotenv');
+const path = require('path');
 
 // Passport config
 require('./passport')(passport);
@@ -49,7 +50,8 @@ app.use('/users', usersRouter);
 app.use('/projects', projectsRouter);
 app.use('/auth', authRouter);
 
-app.use(express.static('public'));
+console.log('PATH', __dirname + '/public')
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(8080, () => {
     console.log('Server running on port 8080');

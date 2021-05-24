@@ -8,6 +8,7 @@ class Project extends Model {
     static get relationMappings() {
         const Vote = require('./Vote');
         const User = require('./User');
+        const Image = require('./Image');
         return {
             allVotes: {
                 relation: Model.HasManyRelation,
@@ -32,6 +33,15 @@ class Project extends Model {
                     to: "user.id",
                 },
             },
+
+            image: {
+                relation: Model.BelongsToOneRelation,
+                modelClass: Image,
+                join: {
+                    from: "project.id",
+                    to: "image.project"
+                },
+            }
         }
     };
 }
