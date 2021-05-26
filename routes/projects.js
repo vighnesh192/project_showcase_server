@@ -170,11 +170,12 @@ router.route('/')
 // @desc Get a Project
 // @route GET /projects/:projectId
 router.route('/:projectId')
-    .get(ensureGuest, async (req, res) => {
+    .get(async (req, res) => {
         const project = await Project 
             .query()
             .findById(req.params.projectId)
-            .withGraphFetched('vote');
+            .withGraphFetched('allVotes')
+            .withGraphFetched('image');
         console.log(project);
         res.json(project);
     })
