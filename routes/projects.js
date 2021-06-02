@@ -175,9 +175,21 @@ router.route('/:projectId')
             .query()
             .findById(req.params.projectId)
             .withGraphFetched('allVotes')
-            .withGraphFetched('image');
-        console.log(project);
-        res.json(project);
+            .withGraphFetched('image')
+            .withGraphFetched('user');
+
+        let projWithUser = project.user.map(async (user, i) => {
+            let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
+            console.log('AVATAR', avatar);
+            console.log('USER', user);
+            user["profilePic"] = avatar.profilePic;
+            return project;
+        })
+
+        const promises = await Promise.all(projWithUser);
+
+        console.log('ProjWithUser', promises);
+        res.json(promises[0]);
     })
 
 // @desc Upvote
