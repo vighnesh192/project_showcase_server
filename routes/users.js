@@ -125,13 +125,77 @@ router.route('/:userId/projects')
     .get(async (req, res) => {
         const projects = await Project_User
             .query()
-            .withGraphFetched('projects')
+            .select('projOwner', 'project')
+            .where('projOwner', '=', req.params.userId)
+            .groupBy('project', 'projOwner')
+            .count('project')
+            .orderBy('count', 'DESC')
+            .withGraphFetched('proj')
+            .withGraphFetched('user')
+            .withGraphFetched('allVotes')
+            .withGraphFetched('image');
         
         if(projects) {
-            res.json(projects)
+            let updatedProjects = await projects.map(async (project, index) => {
+                //Remove IF code after updating the seed data
+                if(project.user.length == 0) {
+                    return project;
+                }
+                else {
+                    let projWithUser = await Promise.all(project.user.map(async (user, i) => {
+                        let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
+                        projects[index].user[i]["profilePic"] = avatar.profilePic;
+                        return project;
+                    }));
+                    return projWithUser[0];
+                }
+            });
+
+            const promises = await Promise.all(updatedProjects);
+            res.json(promises);
         }
         else {
             res.json({ 'error': 'The user hasn not uploaded any projects. ' })
+        }
+    });
+
+// @desc Get all the Projects Upvoted by a User
+// @route GET /users/:userId/upvoted
+router.route('/:userId/upvoted')
+    .get(async (req, res) => {
+        try {
+            const projects = await Vote
+                .query()
+                .select('project', 'votedBy')
+                .where('votedBy', '=', req.params.userId)
+                .groupBy('project', 'votedBy')
+                .count('project')
+                .orderBy('count', 'DESC')
+                .withGraphFetched('image')
+                .withGraphFetched('proj')
+                .withGraphFetched('user')
+                .withGraphFetched('allVotes');  // @TODO  Try to optimize allVotes ;                
+
+            let updatedProjects = await projects.map(async (project, index) => {
+                //Remove IF code after updating the seed data
+                if(project.user.length == 0) {
+                    return project;
+                }
+                else {
+                    let projWithUser = await Promise.all(project.user.map(async (user, i) => {
+                        let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
+                        projects[index].user[i]["profilePic"] = avatar.profilePic;
+                        return project;
+                    }));
+                    return projWithUser[0];
+                }
+            });
+
+            const promises = await Promise.all(updatedProjects);
+            res.json(promises);
+        } catch (error) {
+            console.log(error)
+            res.status(404).json({msg: 'Not found'});
         }
     });
 
