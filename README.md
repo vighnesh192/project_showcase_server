@@ -69,15 +69,7 @@ upstream        https://github.com/vighnesh192/project_showcase_server.git (push
   ```bash
   npm run seed
   ```
-* Sessions Setup:-
-  1. Open psql Shell
-  
-  2. Select `project_showcase` Database
-  
-  3. Run this to create `session` table:-  
-    ```bash
-    psql -f "<PATH-TO-PROJECT-FOLDER>\node_modules\connect-pg-simple\table.sql"  
-    ```
+
 ### 6. 📌 Setting up .env file :
 
 1. Create a new file `.env` in the root directory.
@@ -87,12 +79,9 @@ upstream        https://github.com/vighnesh192/project_showcase_server.git (push
 Your application setup is successfully completed!
 
 <a id="run-app"></a>
-### 7. Running the app
 
-    ```bash
-    # development
-    $ npm start
-    ```
+### 7. Running the app
+  npm start
 
 ## ✨ Contributors 
 
