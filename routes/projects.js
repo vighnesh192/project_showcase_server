@@ -151,14 +151,13 @@ router.route('/')
                     .query()
                     .insert(data)
                     .then(async (project) => {
-                        console.log('USER', req.user);
                         const project_user = await Project_User
                             .query()
                             .insert({project: project.id, projOwner: req.user.id});
                         const image = await Image
                             .query()
                             .insert({project: project.id, url: req.file.filename});    
-                        res.json({ projectDetails: req.body, image: req.file })
+                        res.json({ project, image: req.file })
                     });
             } catch (error) {
                 console.log(error)
@@ -180,15 +179,11 @@ router.route('/:projectId')
 
         let projWithUser = project.user.map(async (user, i) => {
             let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
-            console.log('AVATAR', avatar);
-            console.log('USER', user);
             user["profilePic"] = avatar.profilePic;
             return project;
         })
 
         const promises = await Promise.all(projWithUser);
-
-        console.log('ProjWithUser', promises);
         res.json(promises[0]);
     })
 

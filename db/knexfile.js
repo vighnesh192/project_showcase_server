@@ -2,8 +2,6 @@
 const {knexSnakeCaseMappers} = require('objection');
 require('dotenv').config({path:`${__dirname}/../.env`});
 
-console.log(process.env.USER);
-
 module.exports = {
 
   development: {

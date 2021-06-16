@@ -17,8 +17,6 @@ module.exports = function(passport) {
                     last_name: profile.name.familyName,
                 }
 
-                console.log('PROFILE:-', profile);
-
                 try {
                     let googleUser = await Google_User.query().findById(profile.id)
 
@@ -27,7 +25,6 @@ module.exports = function(passport) {
                         done(null, user);
                     } 
                     else {
-                        console.log('GOOGLE NOT USER PRESENT:-')
                         let user = await User.query().insert(newUser);
 
                         const google_user = await Google_User.query()
@@ -48,10 +45,6 @@ module.exports = function(passport) {
                             });
 
                         user = await User.query().findById(google_user.userId).withGraphFetched('profilePic')
-
-                        console.log("USER in STRATEGY:-", user);
-                        console.log("GOOGLE_USER", google_user);
-                        console.log("AVATAR", avatar);
                         
                         done(null, user);
                     }
@@ -88,9 +81,5 @@ module.exports = function(passport) {
         catch (error) {
             done(error, null);
         }
-		// User.query().findById(id, function (err, user) {
-        //     console.log('IN DESERIALIZE 2:-', user);
-		// 	done(null, user);
-		// });
 	});
 }

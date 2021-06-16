@@ -108,7 +108,6 @@ router.route('/:userId')
         try {
             const user = await User.query().findById(req.params.userId).withGraphFetched('profilePic');
             if(user) {
-                console.log('USER', user)
                 res.json(user);
             }
             else {
