@@ -46,17 +46,30 @@ db.schema.hasTable('session').then(exists => {
         port: process.env.DB_PORT,
         database: process.env.DATABASE
     });
-    const sessionConfig = {
-        store: new pgSession({
-            pool: sessionDBaccess,
-            tableName: 'session'
-        }),
-        name: 'SID',
-        secret: process.env.SECRET,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
-    };
+    const sessionConfig = process.env.NODE_ENV ? 
+        {
+            store: new pgSession({
+                conString: process.env.DATABASE_URL,
+                tableName: 'session'
+            }),
+            name: 'SID',
+            secret: process.env.SECRET,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
+        }
+        :
+        {
+            store: new pgSession({
+                pool: sessionDBaccess,
+                tableName: 'session'
+            }),
+            name: 'SID',
+            secret: process.env.SECRET,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
+        };
     app.use(session(sessionConfig));
     
     // Passport Middlewares
