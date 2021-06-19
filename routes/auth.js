@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-const clientUrl = (process.env.ENVIRONMENT === 'LOCAL') ? 'http://localhost:3000/' : '';
+const clientUrl = process.env.NODE_ENV ? 'https://projstemp.herokuapp.com/' : 'http://localhost:3000/';
 
 // @desc    Auth with Google
 // @route   GET /auth/google
