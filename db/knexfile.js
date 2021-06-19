@@ -5,7 +5,7 @@ require('dotenv').config({path:`${__dirname}/../.env`});
 module.exports = {
 
   development: {
-    client: 'postgresql',
+    client: 'pg',
     connection: {
       database: process.env.DATABASE,
       user:     process.env.USER,
@@ -16,12 +16,17 @@ module.exports = {
       max: 10
     },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: 'knex_migrations',
+      directory: './migrations'
     },
     seeds: {
       directory: './seeds'
     },
     ...knexSnakeCaseMappers
-  } 
+  },
 
+  production: {
+    client: 'pg',
+    connection: process.env.DATABASE_URL 
+  }
 };
