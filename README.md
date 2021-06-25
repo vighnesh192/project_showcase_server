@@ -65,10 +65,6 @@ upstream        https://github.com/vighnesh192/project_showcase_server.git (push
   ```bash
   npm run migrate
   ```
-* Seeding:-
-  ```bash
-  npm run seed
-  ```
 
 ### 6. 📌 Setting up .env file :
 
