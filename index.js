@@ -87,6 +87,7 @@ db.schema.hasTable('session').then(exists => {
     app.use(passport.session());
     app.use('/users', usersRouter);
     app.use('/projects', projectsRouter);
+    app.use('/project', projectsRouter);
     app.use('/auth', authRouter);
     
     const port = process.env.PORT || 8080;
