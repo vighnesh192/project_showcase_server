@@ -72,9 +72,11 @@ db.schema.hasTable('session').then(exists => {
         };
     app.use(session(sessionConfig));
 
+    app.use(express.static(path.join(__dirname, 'public')));
+
     if (process.env.NODE_ENV === 'production') {
         app.use(express.static(path.join(__dirname, 'public')));
-        
+
         app.use('*', (request, response) => {
             response.sendFile(path.join(__dirname, 'public', 'index.html'));
         });
