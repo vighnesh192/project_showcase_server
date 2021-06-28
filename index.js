@@ -72,6 +72,13 @@ db.schema.hasTable('session').then(exists => {
         };
     app.use(session(sessionConfig));
 
+    // Passport Middlewares
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use('/users', usersRouter);
+    app.use('/projects', projectsRouter);
+    app.use('/auth', authRouter);
+
     app.use(express.static(path.join(__dirname, 'public')));
 
     if(process.env.NODE_ENV === 'production') {
@@ -83,14 +90,6 @@ db.schema.hasTable('session').then(exists => {
             })
         })
     }
-
-    
-    // Passport Middlewares
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use('/users', usersRouter);
-    app.use('/projects', projectsRouter);
-    app.use('/auth', authRouter);
     
     const port = process.env.PORT || 8080;
     app.listen(port, () => {
