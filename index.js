@@ -71,7 +71,9 @@ db.schema.hasTable('session').then(exists => {
             cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
         };
     app.use(session(sessionConfig));
-
+    
+    app.use(express.static(path.join(__dirname, 'public')));
+    
     // Passport Middlewares
     app.use(passport.initialize());
     app.use(passport.session());
@@ -79,10 +81,8 @@ db.schema.hasTable('session').then(exists => {
     app.use('/projects', projectsRouter);
     app.use('/auth', authRouter);
 
-    app.use(express.static(path.join(__dirname, 'public')));
 
     if(process.env.NODE_ENV === 'production') {
-        app.use(express.static(path.join(__dirname, 'public')));
         app.get('/*', function(req, res) {
             res.sendFile(path.join(__dirname, 'public/index.html'), function(err) {
               if (err) {
