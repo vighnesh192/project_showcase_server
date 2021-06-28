@@ -72,7 +72,7 @@ db.schema.hasTable('session').then(exists => {
         };
     app.use(session(sessionConfig));
     
-    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.static(path.resolve(__dirname, 'public')));
     
     // Passport Middlewares
     app.use(passport.initialize());
