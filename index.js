@@ -74,7 +74,13 @@ db.schema.hasTable('session').then(exists => {
 
     app.use(express.static(path.join(__dirname, 'public')));
 
-    
+    app.get('/*', function(req, res) {
+        res.sendFile(path.join(__dirname, 'public/index.html'), function(err) {
+          if (err) {
+            res.status(500).send(err)
+          }
+        })
+    })
     
     // Passport Middlewares
     app.use(passport.initialize());
