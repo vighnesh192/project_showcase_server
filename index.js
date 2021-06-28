@@ -80,10 +80,9 @@ db.schema.hasTable('session').then(exists => {
     app.use('/auth', authRouter);
 
     if (process.env.NODE_ENV === 'production') {
-        app.get('*', (request, response) => {
-            response.sendFile(path.join(__dirname, 'public'));
+        app.get('/*', (request, response) => {
+            response.sendFile(path.join(__dirname, 'public', 'index.html'));
         });
-        app.use(express.static(path.join(__dirname, 'public')));
     }    
 
     app.use(express.static(path.join(__dirname, 'public')));
