@@ -71,6 +71,12 @@ db.schema.hasTable('session').then(exists => {
             cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }
         };
     app.use(session(sessionConfig));
+
+    if (process.env.NODE_ENV === 'production') {
+        app.use('*', (request, response) => {
+            response.sendFile(path.join(__dirname, 'public', 'index.html'));
+        });
+    } 
     
     // Passport Middlewares
     app.use(passport.initialize());
@@ -79,13 +85,7 @@ db.schema.hasTable('session').then(exists => {
     app.use('/projects', projectsRouter);
     app.use('/auth', authRouter);
 
-    if (process.env.NODE_ENV === 'production') {
-        app.get('/*', (request, response) => {
-            response.sendFile(path.join(__dirname, 'public', 'index.html'));
-        });
-    }    
-
-    // app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.static(path.join(__dirname, 'public')));
     
     const port = process.env.PORT || 8080;
     app.listen(port, () => {
