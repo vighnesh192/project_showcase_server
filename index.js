@@ -73,6 +73,8 @@ db.schema.hasTable('session').then(exists => {
     app.use(session(sessionConfig));
 
     if (process.env.NODE_ENV === 'production') {
+        app.use(express.static(path.join(__dirname, 'public')));
+        
         app.use('*', (request, response) => {
             response.sendFile(path.join(__dirname, 'public', 'index.html'));
         });
@@ -84,8 +86,6 @@ db.schema.hasTable('session').then(exists => {
     app.use('/users', usersRouter);
     app.use('/projects', projectsRouter);
     app.use('/auth', authRouter);
-
-    app.use(express.static(path.join(__dirname, 'public')));
     
     const port = process.env.PORT || 8080;
     app.listen(port, () => {
