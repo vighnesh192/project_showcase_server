@@ -3,6 +3,9 @@
 </h1>
 <p align="center">Backend for Project Showcase (a platform for people to showcase their projects and build a project-centric profile)</p>
 
+## Client Repo:-
+https://github.com/vighnesh192/project-showcase-client
+
 <a id="tech-stack"></a>
 ## ⚙️ Tech Stack
 
