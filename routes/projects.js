@@ -6,8 +6,9 @@ const Project = require('../db/models/Project');
 const Vote = require('../db/models/Vote');
 const Project_User = require('../db/models/Project_User');
 const { ensureAuth, ensureGuest } = require('../middlewares/auth');
-const upload = require('../services/multerServices');
+const {upload, uploadToS3} = require('../services/multerServices');
 const Image = require('../db/models/Image');
+// const uploadToS3 = require('../services/multerServices');
 
 const app = express();
 app.use(express.json());
@@ -139,12 +140,14 @@ router.route('/')
     // @desc Upload a Project
     // @route POST /projects/
     .post(ensureAuth, async (req, res) => {
-        upload(req, res, async (err) => {
+        const postFunc = async (req, res, err) => {
+            console.log('IN POST FUNC')
             if(err) {
                 console.log('ERR', err)
                 res.sendStatus(500);
             }
             try {
+                console.log('REQUEST OBJECT', req.file)
                 const { title, tagline, description, website, github, youtube } = req.body; 
                 const data = { title, tagline, description, website, github, youtube };
                 const project = await Project
@@ -154,16 +157,34 @@ router.route('/')
                         const project_user = await Project_User
                             .query()
                             .insert({project: project.id, projOwner: req.user.id});
-                        const image = await Image
-                            .query()
-                            .insert({project: project.id, url: req.file.filename});    
+                        if(process.env.NODE_ENV === 'production') {
+                            const image = await Image
+                                .query()
+                                .insert({project: project.id, url: req.file.location});
+                        }
+                        else {
+                            const image = await Image
+                                .query()
+                                .insert({project: project.id, url: req.file.filename});    
+                        }
                         res.json({ project, image: req.file })
                     });
             } catch (error) {
                 console.log(error)
                 res.status(500).json({status: 'Failed', err: error});
             }
-        })
+        }
+        
+        if(process.env.NODE_ENV !== 'production') {
+            upload(req, res, async (err) => {
+                postFunc(req, res, err);
+            })
+        }
+        else {
+            uploadToS3(req, res, async (err) => {
+                postFunc(req, res, err);
+            })
+        }
     });
 
 // @desc Get a Project
