@@ -76,6 +76,7 @@ db.schema.hasTable('session').then(exists => {
     
     // Passport Middlewares
     app.use(passport.initialize());
+    // @Desc  Sessions are used to maintain user login by saving a cookie in the browser 
     app.use(passport.session());
     app.use('/users', usersRouter);
     app.use('/projects', projectsRouter);
