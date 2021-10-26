@@ -4,11 +4,11 @@ const multerS3 = require("multer-s3");
 
 const s3 = new aws.S3();
 
-aws.config.update({
+process.env.NODE_ENV == 'production' ? aws.config.update({
     secretAccessKey: process.env.S3_ACCESS_SECRET,
     accessKeyId: process.env.S3_ACCESS_KEY,
     region: "ap-south-1",
-});
+}) : '';
 
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
@@ -35,7 +35,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const uploadToS3 = multer({
+const uploadToS3 = process.env.NODE_ENV == 'production' ? multer({
     fileFilter,
     storage: multerS3({
       acl: "public-read",
@@ -48,9 +48,9 @@ const uploadToS3 = multer({
         cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, ''));
       },
     }),
-}).single('image');
+}).single('image') : '';
 
 const upload = multer({ storage: storage }).single('image');
 
-module.exports = { upload, uploadToS3 };
+process.env.NODE_ENV == 'production' ? module.exports = { upload, uploadToS3 } : module.exports = { upload };
 // module.exports = uploadToS3;

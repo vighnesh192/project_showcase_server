@@ -6,7 +6,7 @@ const Project = require('../db/models/Project');
 const Vote = require('../db/models/Vote');
 const Project_User = require('../db/models/Project_User');
 const { ensureAuth, ensureGuest } = require('../middlewares/auth');
-const {upload, uploadToS3} = require('../services/multerServices');
+const {upload} = require('../services/multerServices');
 const Image = require('../db/models/Image');
 // const uploadToS3 = require('../services/multerServices');
 
