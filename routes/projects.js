@@ -207,7 +207,7 @@ router.route('/:projectId')
 
         const promises = await Promise.all(projWithUser);
         res.json(promises[0]);
-    }).
+    })
 
 // @desc Upvote
 // @route GET /projects/vote
@@ -262,12 +262,12 @@ router.route('/:projectId/comment')
     .post(ensureAuth, async (req, res) => {
         try {
             const data = {
-                userID = req.user.id,
-                projectID = req.params.projectId,
-                commentOnID = req.body.commentOnID,
-                onPost = req.body.onPost,
-                body = req.body.body,
-                deletedAt = null
+                userID: req.user.id,
+                projectID: req.params.projectId,
+                commentOnID: req.body.commentOnID,
+                onPost: req.body.onPost,
+                body: req.body.body,
+                deletedAt: null
             }
 
             const comment = await Comment
