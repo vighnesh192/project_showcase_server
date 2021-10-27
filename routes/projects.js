@@ -8,6 +8,7 @@ const Project_User = require('../db/models/Project_User');
 const { ensureAuth, ensureGuest } = require('../middlewares/auth');
 const {upload} = require('../services/multerServices');
 const Image = require('../db/models/Image');
+const Comment = require('../db/models/Comment');
 // const uploadToS3 = require('../services/multerServices');
 
 const app = express();
@@ -206,7 +207,7 @@ router.route('/:projectId')
 
         const promises = await Promise.all(projWithUser);
         res.json(promises[0]);
-    })
+    }).
 
 // @desc Upvote
 // @route GET /projects/vote
@@ -254,5 +255,32 @@ router.route('/vote')
             }
         }
     })
+
+// @desc Post a Comment
+// @route POST /projects/:projectId/comment
+router.route('/:projectId/comment')
+    .post(ensureAuth, async (req, res) => {
+        try {
+            const data = {
+                userID = req.user.id,
+                projectID = req.params.projectId,
+                commentOnID = req.body.commentOnID,
+                onPost = req.body.onPost,
+                body = req.body.body,
+                deletedAt = null
+            }
+
+            const comment = await Comment
+                .query()
+                .insert(data)
+
+            res.json({ success: true, comment });
+
+        } catch (error) {
+            console.log(error);
+            res.json({ success: false, error });
+        }
+    })
+
 
 module.exports = router;
