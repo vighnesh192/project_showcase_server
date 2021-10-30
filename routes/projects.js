@@ -205,9 +205,18 @@ router.route('/:projectId')
             user["profilePic"] = avatar.profilePic;
             return project;
         })
+        
+        let commentByAvatar = project.comments.map(async (comment, i) => {
+            let avatar = await User.query().findById(comment.userID).withGraphFetched('profilePic');
+            comment["profilePic"] = avatar.profilePic;
+            comment["first_name"] = avatar.first_name;
+            comment["username"] = avatar.username;
+            return project;
+        })
 
-        const promises = await Promise.all(projWithUser);
-        res.json(promises[0]);
+        const promisesOfUser = await Promise.all(projWithUser);
+        const promisesOfComments = await Promise.all(commentByAvatar);
+        res.json(promisesOfComments[0]);
     })
 
 // @desc Upvote
@@ -274,6 +283,9 @@ router.route('/:projectId/comment')
             const comment = await Comment
                 .query()
                 .insert(data)
+
+            let avatar = await User.query().findById(comment.userID).withGraphFetched('profilePic');
+            comment["profilePic"] = await avatar.profilePic;
 
             res.json({ success: true, comment });
 
