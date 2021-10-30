@@ -197,7 +197,8 @@ router.route('/:projectId')
             .findById(req.params.projectId)
             .withGraphFetched('allVotes')
             .withGraphFetched('image')
-            .withGraphFetched('user');
+            .withGraphFetched('user')
+            .withGraphFetched('comments');
 
         let projWithUser = project.user.map(async (user, i) => {
             let avatar = await User.query().findById(user.id).withGraphFetched('profilePic');
@@ -277,7 +278,6 @@ router.route('/:projectId/comment')
             res.json({ success: true, comment });
 
         } catch (error) {
-            console.log(error);
             res.json({ success: false, error });
         }
     })
