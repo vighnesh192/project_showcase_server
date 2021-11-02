@@ -215,8 +215,35 @@ router.route('/:projectId')
         })
 
         const promisesOfUser = await Promise.all(projWithUser);
-        const promisesOfComments = await Promise.all(commentByAvatar);
-        res.json(promisesOfComments[0]);
+        const promisesOfComments = await Promise.all(commentByAvatar)
+
+        // const promisesOfComments = await Promise.all(commentByAvatar).then((data) => {
+        //     let commsOnPost = data[0].comments.filter((comment) => comment.onPost)
+        //     for(let comment of commsOnPost) {
+        //         comment["replies"] = []
+        //         for(let reply of data[0].comments) {
+        //             if((!reply.onPost) && (reply.commentOnID === comment.id)) {
+        //                 comment["replies"].push(reply) 
+        //             }
+        //         }
+        //     }
+        //     data[0].comments = commsOnPost;
+        //     console.log(data[0]);
+        //     res.json(data[0]);
+        // })
+
+        // let arr = await Promise.all(commsOnPost.map(async (comment) => {
+        //     comment["replies"] = [];
+        //     return await Promise.all(promisesOfComments[0].comments.map((reply) => {
+        //         if(!reply.onPost && (reply.commentOnID === comment.id)) {
+        //             return comment["replies"].push(reply)
+        //         }
+        //     }))
+        // }))
+        // console.log(commsOnPost);
+        
+        // console.log(promisesOfComments[0].comments[0])
+        res.json(promisesOfComments[0])
     })
 
 // @desc Upvote
