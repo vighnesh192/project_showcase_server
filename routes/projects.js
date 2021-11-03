@@ -243,7 +243,7 @@ router.route('/:projectId')
         // console.log(commsOnPost);
         
         // console.log(promisesOfComments[0].comments[0])
-        res.json(promisesOfComments[0])
+        promisesOfComments[0] ? res.json(promisesOfComments[0]) : res.json(promisesOfUser[0])
     })
 
 // @desc Upvote
