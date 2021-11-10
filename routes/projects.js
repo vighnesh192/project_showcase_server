@@ -210,6 +210,7 @@ router.route('/:projectId')
             let avatar = await User.query().findById(comment.userID).withGraphFetched('profilePic');
             comment["profilePic"] = avatar.profilePic;
             comment["first_name"] = avatar.first_name;
+            comment["last_name"] = avatar.last_name;
             comment["username"] = avatar.username;
             return project;
         })
@@ -318,6 +319,28 @@ router.route('/:projectId/comment')
 
         } catch (error) {
             res.json({ success: false, error });
+        }
+    })
+
+router.route('/:projectId/comment/:commentId')
+    .patch(ensureAuth, async (req, res) => {
+        try {
+            let comment = await Comment
+                    .query()
+                    .where({
+                        id: req.params.commentId
+                    })
+                    .update({
+                        body: req.body.body,
+                        updated_at: 'now'
+                    })
+                    .returning([
+                        'id', 'userID', 'projectID', 'commentOnID', 'onPost', 'body', 'created_at', 'updated_at', 'deletedAt'
+                    ])
+    
+            res.json({ success: true, comment: comment[0] })
+        } catch (error) {
+            console.log(error)
         }
     })
 
