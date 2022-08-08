@@ -6,7 +6,7 @@ exports.up = function(knex) {
             // The user being followed
             table.integer('userID').references('id').inTable('user');
             // The user who is following
-            table.integer('followerID').references('id').inTable('project');
+            table.integer('followerID').references('id').inTable('user');
             table.timestamps(true, true);
             table.datetime('deletedAt');
         })
