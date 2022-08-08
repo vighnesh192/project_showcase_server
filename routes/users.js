@@ -6,6 +6,7 @@ const Project = require('../db/models/Project');
 const Vote = require('../db/models/Vote');
 const { ensureAuth, ensureGuest } = require('../middlewares/auth');
 const Project_User = require('../db/models/Project_User');
+const Follower = require('../db/models/Follower');
 
 const app = express();
 app.use(express.json());
@@ -197,5 +198,39 @@ router.route('/:userId/upvoted')
             res.status(404).json({msg: 'Not found'});
         }
     });
+
+router.route('/:userId/follow')
+    .post(ensureAuth, async (req, res) => {
+        try {
+            const data = {
+                followerID: req.user.id, // User who has sent the request
+                userID: req.params.userId, // User being followed
+                deletedAt: null
+            }
+
+            const followed = await Follower
+                .query()
+                .insert(data)
+
+            res.json({ success: true, followed });
+
+        } catch (error) {
+            res.json({ success: false, error });
+        }
+    })
+    .get(ensureAuth, async (req, res) => {
+        try {
+            const checkFollow = await Follower
+                .query()
+                .where({
+                    followerID: req.user.id,
+                    userID: req.params.userId
+                });
+            
+            checkFollow ? res.json({ success: true }) : res.json({ success: false })
+        } catch (error) {
+            res.json({ success: false, error })
+        }        
+    })
 
 module.exports = router;
