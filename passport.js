@@ -11,6 +11,7 @@ module.exports = function(passport) {
 				clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 				callbackURL: "/auth/google/callback",
 			},
+            // Executed when /auth/google/callback's middleware is executed 
 			async (accessToken, refreshToken, profile, done) => {
                 const newUser = {
                     first_name: profile.name.givenName,
@@ -57,10 +58,10 @@ module.exports = function(passport) {
 	);
 
     // REFER https://stackoverflow.com/questions/27637609/understanding-passport-serialize-deserialize
-	// used to serialize(save) the user for the session
+	// used to serialize(save) the user in the cookie for the session 
     // which sets req.session.passport.user = {id: 'xyz'}
 	passport.serializeUser(function (user, done) {
-		done(null, user);
+		done(null, user); // This will pass 'user' to 'express-session' which will make a cookie & save it in the browser
 	});
 
 	// used to deserialize(extract) the user serialized to req.session.passport.user

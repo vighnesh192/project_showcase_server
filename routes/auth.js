@@ -6,10 +6,12 @@ const clientUrl = process.env.NODE_ENV ? 'https://projstemp.herokuapp.com/' : 'h
 
 // @desc    Auth with Google
 // @route   GET /auth/google
+// @desc Middleware:-  Triggers GoogleStrategy and gets us the CODE in the url after auth
 router.get('/google', passport.authenticate('google', { scope: ['profile'] } ));
 
 // @desc Google auth callback
 // @route GET /auth/google/callback
+// @desc Middleware:-   Exchanges the above CODE for profile info, Fires the callback func in passport.js, serializes the user and saves it inside a cookie
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/google' }), (req, res) => {
     res.redirect(clientUrl);
 })

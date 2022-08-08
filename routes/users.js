@@ -202,19 +202,48 @@ router.route('/:userId/upvoted')
 router.route('/:userId/follow')
     .post(ensureAuth, async (req, res) => {
         try {
-            const data = {
-                followerID: req.user.id, // User who has sent the request
-                userID: req.params.userId, // User being followed
-                deletedAt: null
-            }
-
-            const followed = await Follower
+            const checkFollow = await Follower
                 .query()
-                .insert(data)
+                .where({
+                    followerID: req.user.id,
+                    userID: req.params.userId
+                });
+            console.log("CHECK FOLLOW", checkFollow)
+            if(!checkFollow.length > 0) {
+                const data = {
+                    followerID: req.user.id, // User who has sent the request
+                    userID: req.params.userId, // User being followed
+                    deletedAt: null
+                }
+    
+                const followed = await Follower
+                    .query()
+                    .insert(data)
+    
+                console.log("FOLLOWED:-", followed);
+                
+                res.json({ success: true, followed });
+            }
+            else {
+                try {
+                    const unfollowed = await Follower 
+                        .query()
+                        .delete()
+                        .where({
+                            followerID: req.user.id,
+                            userID: req.params.userId
+                        });
 
-            res.json({ success: true, followed });
-
+                    console.log("UNFOLLOWED:-", unfollowed);
+                    res.json({ success: true, unfollowed });
+                    
+                } catch (error) {
+                    res.json({ success: false, error });
+                }
+            }
+            
         } catch (error) {
+            console.log("FOLLOWED ERROR:-", error);
             res.json({ success: false, error });
         }
     })
@@ -226,8 +255,8 @@ router.route('/:userId/follow')
                     followerID: req.user.id,
                     userID: req.params.userId
                 });
-            
-            checkFollow ? res.json({ success: true }) : res.json({ success: false })
+            console.log("CHECK FOLLOW in GET:-", checkFollow)
+            checkFollow.length > 0 ? res.json({ success: true }) : res.json({ success: false })
         } catch (error) {
             res.json({ success: false, error })
         }        
