@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.54e04577.chunk.css",
-    "main.js": "/static/js/main.f3311f2e.chunk.js",
-    "main.js.map": "/static/js/main.f3311f2e.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.137a7161.js",
-    "runtime-main.js.map": "/static/js/runtime-main.137a7161.js.map",
-    "static/js/2.2246c6f8.chunk.js": "/static/js/2.2246c6f8.chunk.js",
-    "static/js/2.2246c6f8.chunk.js.map": "/static/js/2.2246c6f8.chunk.js.map",
-    "static/js/3.f01d1ebf.chunk.js": "/static/js/3.f01d1ebf.chunk.js",
-    "static/js/3.f01d1ebf.chunk.js.map": "/static/js/3.f01d1ebf.chunk.js.map",
+    "main.css": "/static/css/main.17bdc179.chunk.css",
+    "main.js": "/static/js/main.15f94602.chunk.js",
+    "main.js.map": "/static/js/main.15f94602.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.2c20062b.js",
+    "runtime-main.js.map": "/static/js/runtime-main.2c20062b.js.map",
+    "static/js/2.b0c322a6.chunk.js": "/static/js/2.b0c322a6.chunk.js",
+    "static/js/2.b0c322a6.chunk.js.map": "/static/js/2.b0c322a6.chunk.js.map",
+    "static/js/3.00e0ead7.chunk.js": "/static/js/3.00e0ead7.chunk.js",
+    "static/js/3.00e0ead7.chunk.js.map": "/static/js/3.00e0ead7.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.54e04577.chunk.css.map": "/static/css/main.54e04577.chunk.css.map",
-    "static/js/2.2246c6f8.chunk.js.LICENSE.txt": "/static/js/2.2246c6f8.chunk.js.LICENSE.txt",
+    "static/css/main.17bdc179.chunk.css.map": "/static/css/main.17bdc179.chunk.css.map",
+    "static/js/2.b0c322a6.chunk.js.LICENSE.txt": "/static/js/2.b0c322a6.chunk.js.LICENSE.txt",
     "static/media/undraw_Upvote_re_qn2k.ad5a5e33.svg": "/static/media/undraw_Upvote_re_qn2k.ad5a5e33.svg",
     "static/media/undraw_features_overview_jg7a.e863bb8f.svg": "/static/media/undraw_features_overview_jg7a.e863bb8f.svg",
     "static/media/undraw_online_cv_qy9w (1).dce13483.svg": "/static/media/undraw_online_cv_qy9w (1).dce13483.svg",
@@ -19,9 +19,9 @@
     "static/media/undraw_uploading_go67.svg": "/static/media/undraw_uploading_go67.38d4dd8c.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.137a7161.js",
-    "static/js/2.2246c6f8.chunk.js",
-    "static/css/main.54e04577.chunk.css",
-    "static/js/main.f3311f2e.chunk.js"
+    "static/js/runtime-main.2c20062b.js",
+    "static/js/2.b0c322a6.chunk.js",
+    "static/css/main.17bdc179.chunk.css",
+    "static/js/main.15f94602.chunk.js"
   ]
 }
