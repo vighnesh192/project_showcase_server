@@ -4,9 +4,10 @@ class User extends Model {
     static get tableName() {
         return 'user';
     }
-
+    
     static get relationMappings() {
         const Image = require('./Image');
+        const Follower = require('./Follower');
         return {
             profilePic: {
                 relation: Model.BelongsToOneRelation,
@@ -15,7 +16,16 @@ class User extends Model {
                     from: "user.avatar",
                     to: "image.id"
                 },
-            }
+            },
+
+            followers: {
+                relation: Model.HasManyRelation,
+                modelClass: Follower,
+                join: {
+                  from: 'user.id',
+                  to: 'follower.userID'
+                }
+            },
         };
     };
 }
